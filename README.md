@@ -5,6 +5,11 @@
 - 多阶贝塞尔曲线方法抽取
 - 大批量线段绘制的性能优化
 
+- Dynamically adjust line thickness and transparency based on finger sliding speed
+- Performing a Bezier method on adjacent segments
+- Multi-order Bezier curve method extraction
+- Performance optimization for high volume line segment drawing
+
 ![](/章.PNG)
 
 ![](/锋.PNG)
@@ -17,6 +22,10 @@
 - 触摸点的动态忽略算法
 - 撤销功能
 - 线宽设定更改到UI级别
+- ~~3D Touch version~~
+- Dynamic ignore algorithm for touch points
+- Undo function
+- Change the line width setting to the UI level
 
 ## Author
 
