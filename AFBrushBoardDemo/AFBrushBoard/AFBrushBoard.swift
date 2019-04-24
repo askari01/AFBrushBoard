@@ -13,45 +13,67 @@ let use3DTouch = true;
 
 class AFBrushBoard: UIImageView {
     // 存放点集的数组
+    // Array of point sets
     var points:[CGPoint] = [CGPoint]()
     
     var pointForces:[CGFloat] = [CGFloat]()
     
     // 当前半径
+    // Current radius
     var currentWidth:CGFloat = 10
     
     // 初始图片
+    //Initial picture
     var defaultImage:UIImage?
+    
     // 上次图片
+    // Last picture
     var lastImage:UIImage?
     
     // 最大和最小宽度
+    // Maximum and minimum width
     let minWidth:CGFloat = 5
     let maxWidth:CGFloat = 13
     
     // 设置调试
+    // Setting up debugging
     let DEBUG = false
     
     override init(frame: CGRect) {
         
         // 控件基本设定
+        // Basic settings of the control
         super.init(frame: frame)
         self.backgroundColor = UIColor.clear
         self.isUserInteractionEnabled = true
         
         // 清除按钮设定12
-        let btn = UIButton(frame: CGRect(x: 0, y: self.frame.size.height-50, width: self.frame.size.width, height: 50))
-        btn.backgroundColor = UIColor(white: 0.3, alpha: 0.3)
-        btn.setTitleColor(UIColor.black, for: .normal)
-        btn.titleLabel!.font = UIFont(name: "Zapfino", size: 18)
-        btn.titleEdgeInsets = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
-        btn.setTitle("Clear ", for: .normal)
+        // Clear button setting 12
+        let btn = UIButton(frame: CGRect(x: 0,
+                                         y: self.frame.size.height-50,
+                                         width: self.frame.size.width,
+                                         height: 50))
+        btn.backgroundColor = UIColor(white: 0.3,
+                                      alpha: 0.3)
+        btn.setTitleColor(UIColor.black,
+                          for: .normal)
+        btn.titleLabel!.font = UIFont(name: "Helvetica Neue",
+                                      size: 18)
+        btn.titleEdgeInsets = UIEdgeInsets(top: 20,
+                                           left: 0,
+                                           bottom: 0,
+                                           right: 0)
+        btn.setTitle("Clear ",
+                     for: .normal)
         
 
-        btn.addTarget(self, action: #selector(AFBrushBoard.btnClick), for: UIControl.Event.touchUpInside)
+        btn.addTarget(self,
+                      action: #selector(AFBrushBoard.btnClick),
+                      for: UIControl.Event.touchUpInside)
         addSubview(btn)
         
         // 默认图片设定
+        // Default picture setting
         image = UIImage(named: "apple")
         defaultImage = image
         lastImage = image
@@ -71,6 +93,7 @@ class AFBrushBoard: UIImageView {
     /**
      图片恢复初始化
      */
+    // Picture recovery initialization
     @objc func btnClick() {
         image = defaultImage
         lastImage = defaultImage
@@ -80,11 +103,13 @@ class AFBrushBoard: UIImageView {
     /**
      画图
      */
+    // Drawing
     func changeImage(){
         UIGraphicsBeginImageContextWithOptions(frame.size, false, 0)
         lastImage!.draw(in: self.bounds)
         
         // 贝赛尔曲线的起始点和末尾点
+        // Starting point and end point of the Bezier curve
         let tempPoint1 = CGPoint(x:(points[0].x+points[1].x)/2, y:(points[0].y+points[1].y)/2)
         let tempPoint2 = CGPoint(x:(points[1].x+points[2].x)/2, y:(points[1].y+points[2].y)/2)
         
@@ -103,11 +128,13 @@ class AFBrushBoard: UIImageView {
         }
         
         // 贝赛尔曲线的估算长度
+        // Estimated length of the Bezier curve
         let x1 = abs(tempPoint1.x-tempPoint2.x)
         let x2 = abs(tempPoint1.y-tempPoint2.y)
         let len = Int(sqrt(pow(x1, 2) + pow(x2,2))*10)
         
         // 如果仅仅点击一下
+        // If just click
         if len == 0 {
             let zeroPath = UIBezierPath(arcCenter: points[1], radius: maxWidth/2-2, startAngle: 0, endAngle: CGFloat(Double.pi)*2.0, clockwise: true)
             UIColor.black.setFill()
@@ -121,6 +148,7 @@ class AFBrushBoard: UIImageView {
         }
         
         // 如果距离过短，直接画线
+        // If the distance is too short, draw a line directly
         if len < 1 {
             let zeroPath = UIBezierPath()
             zeroPath.move(to: tempPoint1)
@@ -143,6 +171,7 @@ class AFBrushBoard: UIImageView {
         }
         
         // 目标半径
+        // Target radius
         var aimWidth:CGFloat;
         
         if use3DTouch {
@@ -152,15 +181,18 @@ class AFBrushBoard: UIImageView {
         }
         
         // 获取贝塞尔点集
+        // Get Bessel Point Set
         let curvePoints = AFBezierPath.curveFactorization(fromPoint: tempPoint1, toPoint: tempPoint2, controlPoints: [points[1]], count: len)
         
         // 画每条线段
+        // Draw each line segment
         var lastPoint:CGPoint = tempPoint1
         for i in 0..<len+1 {
             let bPath = UIBezierPath()
             bPath.move(to: lastPoint)
             
             // 省略多余的点
+            // Omit redundant points
             let delta = sqrt(pow(curvePoints[i].x-lastPoint.x, 2) + pow(curvePoints[i].y-lastPoint.y, 2))
             if delta < 1 {continue}
             
@@ -169,6 +201,7 @@ class AFBrushBoard: UIImageView {
             bPath.addLine(to: CGPoint(x: curvePoints[i].x, y: curvePoints[i].y))
             
             // 计算当前点
+            // Calculate the current point
             if currentWidth > aimWidth {
                 currentWidth -= 0.05
             }else{
@@ -178,6 +211,7 @@ class AFBrushBoard: UIImageView {
             if currentWidth < minWidth {currentWidth=minWidth}
             
             // 画线
+            // Draw line
             bPath.lineWidth = currentWidth
             bPath.lineCapStyle = .round
             bPath.lineJoinStyle = .round
@@ -187,6 +221,7 @@ class AFBrushBoard: UIImageView {
         }
         
         // 保存图片
+        // save Picture
         lastImage = UIGraphicsGetImageFromCurrentImageContext()
         
         let pointCount = Int(sqrt(pow(tempPoint2.x-points[2].x,2)+pow(tempPoint2.y-points[2].y,2)))*2
@@ -196,6 +231,7 @@ class AFBrushBoard: UIImageView {
         var addRadius = currentWidth
         
         // 尾部线段
+        // Tail line segment
         for _ in 0..<pointCount {
             let bpath = UIBezierPath()
             bpath.move(to: lastPoint)
@@ -206,6 +242,7 @@ class AFBrushBoard: UIImageView {
             bpath.addLine(to: newPoint)
             
             // 计算当前点
+            // Calculate the current point
             if addRadius > aimWidth {
                 addRadius -= 0.02
             }else{
@@ -215,6 +252,7 @@ class AFBrushBoard: UIImageView {
             if addRadius < 0 {addRadius=0}
             
             // 画线
+            // Draw line
             bpath.lineWidth = addRadius
             bpath.lineCapStyle = .round
             bpath.lineJoinStyle = .round
@@ -230,6 +268,7 @@ class AFBrushBoard: UIImageView {
 }
 
 // 触摸事件
+// Touch event
 extension AFBrushBoard {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -270,6 +309,7 @@ extension AFBrushBoard {
 /**
  *分解贝塞尔曲线
  */
+// Decomposed Bezier curve
 class AFBezierPath {
     
     /**
@@ -278,10 +318,16 @@ class AFBezierPath {
      controlPoints:控制点数组
      count:分解数量
      返回:分解的点集
+     fromPoint: starting point
+     toPoint: termination point
+     controlPoints: control point array
+     Count: the number of decompositions
+     Returns: the set of points that are resolved
      */
     class func curveFactorization(fromPoint:CGPoint, toPoint: CGPoint, controlPoints:[CGPoint], count:Int) -> [CGPoint]{
         var count = count
         //如果分解数量为0，生成默认分解数量
+        // If the number of decompositions is 0, the default number of decompositions is generated.
         if count == 0 {
             let x1 = abs(fromPoint.x-toPoint.x)
             let x2 = abs(fromPoint.y-toPoint.y)
@@ -289,6 +335,7 @@ class AFBezierPath {
         }
         
         // 贝赛尔曲线的计算
+        // Calculation of Bezier curve
         var s:CGFloat = 0.0
         var t:[CGFloat] = [CGFloat]()
         let pc:CGFloat = 1/CGFloat(count)

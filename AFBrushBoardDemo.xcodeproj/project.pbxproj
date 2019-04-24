@@ -15,7 +15,22 @@
 		E8BC5E851C5375080033F478 /* AFBrushBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BC5E841C5375080033F478 /* AFBrushBoard.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		060A2CB3226F80F30040B4F3 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		060A2C95226F80F30040B4F3 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
+		060A2CA1226F80F30040B4F3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E8BC5E6B1C5373070033F478 /* AFBrushBoardDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AFBrushBoardDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8BC5E6E1C5373070033F478 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E8BC5E701C5373070033F478 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -37,10 +52,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		060A2C94226F80F30040B4F3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				060A2C95226F80F30040B4F3 /* ReplayKit.framework */,
+				060A2CA1226F80F30040B4F3 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		E8BC5E621C5373070033F478 = {
 			isa = PBXGroup;
 			children = (
 				E8BC5E6D1C5373070033F478 /* AFBrushBoardDemo */,
+				060A2C94226F80F30040B4F3 /* Frameworks */,
 				E8BC5E6C1C5373070033F478 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,6 +110,7 @@
 				E8BC5E671C5373070033F478 /* Sources */,
 				E8BC5E681C5373070033F478 /* Frameworks */,
 				E8BC5E691C5373070033F478 /* Resources */,
+				060A2CB3226F80F30040B4F3 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
@@ -101,7 +127,7 @@
 		E8BC5E631C5373070033F478 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0720;
+				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = AfryMask;
 				TargetAttributes = {
